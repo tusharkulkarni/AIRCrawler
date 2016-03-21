@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -51,10 +57,13 @@ public class Crawler implements Constants{
 		return result;
 	}
 
-	public String fetchText(String url) throws IOException, MalformedURLException {
+	public static void main(String[] args) throws Exception {
+		System.out.println("printing...");
+		curl();
+	}
+	public static String fetchText(String url) throws IOException, MalformedURLException {
 		Document page = null;
-		page = Jsoup.connect(url).get();
-		System.out.println(shouldCrawlURL(url));
+		page = Jsoup.connect(url).get();		
 		System.out.println("Fetch Text from : " + url);
 		return page.body().text();
 	}
@@ -104,6 +113,31 @@ public class Crawler implements Constants{
 			System.out.println(responseCode);
 		}
 		return urlList;
+	}
+
+
+	public static void curl() throws MalformedURLException, IOException, Exception{
+
+
+		String url = new String();
+		//url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByNutrients?maxcalories=100&maxcarbs=100&maxfat=100&maxprotein=100&mincalories=0&minCarbs=0&minfat=0&minProtein=0";
+		try {
+			HttpClient client = new DefaultHttpClient();  
+			String getURL = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByNutrients?maxcalories=100&maxcarbs=100&maxfat=100&maxprotein=100&mincalories=0&minCarbs=0&minfat=0&minProtein=0";
+			HttpGet httpGet = new HttpGet(getURL);
+			httpGet .setHeader("X-Mashape-Key", "q8OegLa2iqmshvbsYklWvajeDcqZp1e63fSjsnmhLIw9xoIlw1");
+			HttpResponse response = client.execute(httpGet);  
+			HttpEntity resEntity = response.getEntity();  
+			if (resEntity != null) {  
+				//parse response.
+				System.out.println("Response" + EntityUtils.toString(resEntity));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+
 	}
 
 	public void writeFile(String filename, String data)throws IOException{

@@ -34,16 +34,19 @@ public class ReadTextFromURL implements Constants {
 			Crawler cr = new Crawler();	
 			List<String> urlList = cr.fetchURLsFromBing(query);
 			for (String url : urlList) {
+				try{
 				System.out.println("first for... count1 = " + count1 + " count2 = " + count2);
 				String data = cr.fetchText(url);
 				cr.writeFile(OUTPUT_PATH + count1++, data);
-				List<String> resultList1 = cr.fetchURLList(url);				
+				List<String> resultList1 = cr.fetchURLList(url);	
+				count2 = 0;
 				for (String urlLevel1 : resultList1) {
+					
 					System.out.println("second for... count1 = " + count1 + " count2 = " + count2);
 					if(cr.shouldCrawlURL(urlLevel1)){
 						String data1 = cr.fetchText(urlLevel1);
 						cr.writeFile(OUTPUT_PATH + count1++, data1);
-						List<String> resultList2 = cr.fetchURLList(urlLevel1);
+						/*List<String> resultList2 = cr.fetchURLList(urlLevel1);
 						for (String urlLevel2 : resultList2) {
 							System.out.println("third for... count1 = " + count1 + " count2 = " + count2);
 							if(cr.shouldCrawlURL(urlLevel2)){
@@ -51,11 +54,15 @@ public class ReadTextFromURL implements Constants {
 								cr.writeFile(OUTPUT_PATH + count1++, data2);
 							}
 						}
+					}*/
+					}
+					count2++;
+					if(count2 == 5){
+						break;
 					}
 				}
-				count2++;
-				if(count2 == 2){
-					break;
+				}catch(Exception e){
+					System.out.println(e);
 				}
 			}
 		}
